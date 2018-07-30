@@ -3,12 +3,9 @@ package com.example.hyein.searchapplication.viewmodel
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.ViewModel
-import android.content.Context
 import com.example.hyein.searchapplication.model.Item
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import java.io.InputStream
 
 class ItemViewModel(application: Application):AndroidViewModel(application){ //ViewModel(){
     private var items = ArrayList<Item>()

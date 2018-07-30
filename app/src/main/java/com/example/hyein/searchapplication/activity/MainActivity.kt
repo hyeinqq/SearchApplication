@@ -1,9 +1,11 @@
-package com.example.hyein.searchapplication
+package com.example.hyein.searchapplication.activity
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import com.example.hyein.searchapplication.adapter.ItemAdapter
+import com.example.hyein.searchapplication.R
 import com.example.hyein.searchapplication.model.Item
 
 class MainActivity : AppCompatActivity() {
@@ -16,7 +18,6 @@ class MainActivity : AppCompatActivity() {
             layoutManager = LinearLayoutManager(this@MainActivity)
         }
         recyclerView.adapter = ItemAdapter(getItem())
-
     }
 
     private fun getItem() : ArrayList<Item>{

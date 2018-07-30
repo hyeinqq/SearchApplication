@@ -17,14 +17,13 @@ class MainActivity : AppCompatActivity() {
         }
         recyclerView.adapter = ItemAdapter(getItem())
 
-
     }
 
     private fun getItem() : ArrayList<Item>{
         val item = Item("test","description")
         val list : ArrayList<Item> = ArrayList()
         list.add(item)
-        list.add(item)
+        list.add(Item("test","kkkkk"))
         list.add(item)
         list.add(item)
 

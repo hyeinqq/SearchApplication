@@ -22,8 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.8"
             android:ems="10"
-            android:inputType="textPersonName"
-            android:text="Name" />
+            android:inputType="textPersonName" />
 
         <ImageButton
             android:id="@+id/imageButton"

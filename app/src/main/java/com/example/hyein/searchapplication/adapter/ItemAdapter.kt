@@ -13,7 +13,6 @@ class ItemAdapter(private val itemList : ArrayList<Item>): RecyclerView.Adapter<
 
     class ViewHolder(private val binding: ItemContentBinding): RecyclerView.ViewHolder(binding.root){
         fun bindTo(item: Item){
-            Log.i("ITEM ", ""+item)
             binding.item = item
         }
     }

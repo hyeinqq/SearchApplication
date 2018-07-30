@@ -6,7 +6,10 @@ import android.arch.lifecycle.ViewModelProviders
 import android.databinding.DataBindingUtil
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import com.example.hyein.searchapplication.adapter.ItemAdapter
@@ -15,7 +18,7 @@ import com.example.hyein.searchapplication.databinding.ActivityMainBinding
 import com.example.hyein.searchapplication.model.Item
 import com.example.hyein.searchapplication.viewmodel.ItemViewModel
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), TextWatcher {
     val TAG:String = "TEST!"
     lateinit var mainBinding: ActivityMainBinding
     lateinit var itemViewModel: ItemViewModel
@@ -28,14 +31,21 @@ class MainActivity : AppCompatActivity() {
         mainBinding.recyclerView.apply{
             layoutManager = LinearLayoutManager(this@MainActivity)
             adapter = ItemAdapter(getItem())
+            addItemDecoration(DividerItemDecoration(this@MainActivity, DividerItemDecoration.VERTICAL))
         }
 
-
+        mainBinding.editText.addTextChangedListener(this)
 
         subscribe()
     }
 
-    fun subscribe(){
+    fun searchKeyword(view: View){
+        Log.i(TAG, "search keyword "+  mainBinding.editText.text)
+        val keyword : String = mainBinding.editText.text.toString()
+        itemViewModel.search(keyword)
+    }
+
+    private fun subscribe(){
         val searchObserver: Observer<ArrayList<Item>> = Observer {
             mainBinding.recyclerView.adapter = ItemAdapter(it!!)
         }
@@ -46,9 +56,17 @@ class MainActivity : AppCompatActivity() {
         return itemViewModel.getResultItems().value!!
     }
 
-    fun searchKeyword(view: View){
-        Log.i(TAG, "search keyword "+  mainBinding.editText.text)
-        val keyword : String = mainBinding.editText.text.toString()
-        itemViewModel.search(keyword)
+
+    //implements textWatcher
+
+    override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
     }
+    override fun afterTextChanged(p0: Editable?) {
+        Log.i(TAG, "editable ?? "+p0.toString())
+        itemViewModel.search(p0.toString())
+    }
+
+    override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+    }
+
 }

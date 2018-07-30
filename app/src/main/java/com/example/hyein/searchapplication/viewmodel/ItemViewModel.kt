@@ -1,11 +1,17 @@
 package com.example.hyein.searchapplication.viewmodel
 
+import android.app.Application
+import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
+import android.content.Context
 import com.example.hyein.searchapplication.model.Item
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import java.io.InputStream
 
-class ItemViewModel:ViewModel(){
-    private var items = ArrayList<Item>() //MutableLiveData<ArrayList<Item>>()
+class ItemViewModel(application: Application):AndroidViewModel(application){ //ViewModel(){
+    private var items = ArrayList<Item>()
     private var resultItems : MutableLiveData<ArrayList<Item>>? = null
 
     init {
@@ -14,7 +20,7 @@ class ItemViewModel:ViewModel(){
 
     fun search(keyword: String){
          resultItems?.postValue(ArrayList(items.filter{
-             it.description.indexOf(keyword) > -1
+             it.description.toLowerCase().indexOf(keyword.toLowerCase()) > -1
          }))
     }
 
@@ -27,11 +33,10 @@ class ItemViewModel:ViewModel(){
     }
 
     fun initItems(){
-        val item = Item("test","description")
-        items.add(item)
-        items.add(Item("test","kkkkk"))
-        items.add(item)
-        items.add(item)
+        val jsonString: String = getApplication<Application>().assets.open("item.json").bufferedReader().use { it.readText() }
+
+        items = Gson().fromJson(jsonString, object : TypeToken<ArrayList<Item>>(){}.type)
+        items.add(Item("테스트","테스트테스트테스트테스트테스트"))
     }
 
     override fun onCleared() {

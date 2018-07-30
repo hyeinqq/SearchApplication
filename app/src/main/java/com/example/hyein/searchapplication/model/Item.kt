@@ -1,4 +1,8 @@
 package com.example.hyein.searchapplication.model
 
-data class Item(private val name: String,
-                private val description: String)
+data class Item(var name: String,
+                var description: String){
+    override fun toString(): String {
+        return "name : $name   description : $description"
+    }
+}

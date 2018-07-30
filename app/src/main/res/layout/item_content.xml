@@ -1,14 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/itemTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:lines="2"
-        android:text="TextView"
+        android:text="dfd"
         tools:text="test \ntest \n test" />
 </LinearLayout>
+<!--<layout xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--xmlns:tools="http://schemas.android.com/tools">-->
+    <!--<data>-->
+        <!--<import type="com.example.hyein.searchapplication.model.Item"/>-->
+        <!--<variable-->
+            <!--name="item"-->
+            <!--type="Item"/>-->
+    <!--</data>-->
+
+    <!--<LinearLayout-->
+        <!--android:orientation="vertical" android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent">-->
+
+        <!--<TextView-->
+            <!--android:id="@+id/itemTextView"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:lines="2"-->
+            <!--android:text="@{item.description}"-->
+            <!--tools:text="test \ntest \n test" />-->
+    <!--</LinearLayout>-->
+<!--</layout>-->

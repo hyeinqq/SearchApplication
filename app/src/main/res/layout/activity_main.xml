@@ -17,11 +17,12 @@
             android:orientation="horizontal"
             android:weightSum="1">
 
-            <EditText
-                android:id="@+id/editText"
+            <AutoCompleteTextView
+                android:id="@+id/searchTextView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.8"
+                android:completionThreshold="0"
                 android:ems="10"
                 android:imeOptions="actionSearch"
                 android:inputType="textPersonName" />

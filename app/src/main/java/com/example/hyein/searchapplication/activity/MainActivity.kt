@@ -20,28 +20,30 @@ import com.example.hyein.searchapplication.R
 import com.example.hyein.searchapplication.databinding.ActivityMainBinding
 import com.example.hyein.searchapplication.model.Item
 import com.example.hyein.searchapplication.viewmodel.ItemViewModel
-
+import com.example.hyein.searchapplication.viewmodel.KeywordViewModel
 
 
 class MainActivity : AppCompatActivity(), TextWatcher, View.OnKeyListener {
     val TAG:String = "TEST!"
     lateinit var mainBinding: ActivityMainBinding
     lateinit var itemViewModel: ItemViewModel
+    lateinit var keywordViewModel: KeywordViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mainBinding = DataBindingUtil.setContentView(this@MainActivity, R.layout.activity_main)
         itemViewModel = ViewModelProviders.of(this@MainActivity).get(ItemViewModel::class.java)
+        keywordViewModel = ViewModelProviders.of(this@MainActivity).get(KeywordViewModel::class.java)
 
         mainBinding.recyclerView.apply{
             layoutManager = LinearLayoutManager(this@MainActivity)
-            adapter = ItemAdapter(getItem())
+            adapter = ItemAdapter(getItem(), ArrayList<String>())
             addItemDecoration(DividerItemDecoration(this@MainActivity, DividerItemDecoration.VERTICAL))
         }
 
         mainBinding.searchTextView.addTextChangedListener(this)
         mainBinding.searchTextView.setOnKeyListener(this)
-        mainBinding.searchTextView.setAdapter(ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, itemViewModel.getLocalKeyword()))
+        mainBinding.searchTextView.setAdapter(ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, keywordViewModel.getLocalKeyword()))
 
         subscribe()
     }
@@ -52,14 +54,20 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnKeyListener {
 
         itemViewModel.search(keywords)
         //TODO 검색기록에 저장하기
-        itemViewModel.saveLocalKeyword(keywords)
+        keywordViewModel.saveLocalKeyword(keywords)
     }
 
     private fun subscribe(){
         val searchObserver: Observer<ArrayList<Item>> = Observer {
-            mainBinding.recyclerView.adapter = ItemAdapter(it!!)
+            mainBinding.recyclerView.adapter = ItemAdapter(it!!, keywordViewModel.getCurrentKeywordList())
         }
         itemViewModel.getResultItems().observe(this@MainActivity, searchObserver)
+
+        val keywordObserver: Observer<ArrayList<String>> = Observer {
+            mainBinding.searchTextView.setAdapter(ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, it))
+        }
+
+        keywordViewModel.getKeywords().observe(this@MainActivity, keywordObserver)
     }
 
     private fun getItem() : ArrayList<Item>{
@@ -74,8 +82,7 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnKeyListener {
             imm.hideSoftInputFromWindow(mainBinding.searchTextView.windowToken, 0)
 
             //TODO 검색기록에 저장하기
-            itemViewModel.saveLocalKeyword(mainBinding.searchTextView.text.toString())
-            mainBinding.searchTextView.setAdapter(ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, itemViewModel.getLocalKeyword()))
+            keywordViewModel.saveLocalKeyword(mainBinding.searchTextView.text.toString())
             return true
         }
         return false
@@ -86,7 +93,7 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnKeyListener {
         mainBinding.searchTextView.showDropDown()
     }
     override fun afterTextChanged(p0: Editable?) {
-        Log.i(TAG, "editable ?? "+p0.toString())
+        keywordViewModel.setCurrentKeyword(p0.toString())
         itemViewModel.search(p0.toString())
     }
 

@@ -2,38 +2,42 @@ package com.example.hyein.searchapplication.viewmodel
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.Transformations
 import android.arch.lifecycle.ViewModel
-import android.preference.PreferenceManager
 import android.util.Log
 import com.example.hyein.searchapplication.model.Item
 import com.example.hyein.searchapplication.model.Keyword
 import com.example.hyein.searchapplication.repository.ItemRepository
 
-class ItemViewModel(private val repository: ItemRepository) : ViewModel(){ //ViewModel(){
-    private var items = ArrayList<Item>()
+class ItemViewModel(private val repository: ItemRepository?) : ViewModel(){ //ViewModel(){
+    var items = ArrayList<Item>()
     private var resultItems : MutableLiveData<ArrayList<Item>>? = null
 
     init {
-        initItems()
+        repository?.let { initItems()}
     }
 
     fun search(keywords: String){
-        val tmpItems = ArrayList<Item>()
-        for(keyword in keywords.split(' ')){
-            tmpItems.addAll(items.filter{
-                it.description.toLowerCase().indexOf(keyword.toLowerCase()) > -1
-            })
-        }
-        resultItems?.postValue(tmpItems)
+        resultItems?.postValue(filterList(keywords))
     }
 
+    fun filterList(keywords: String): ArrayList<Item>{
 
-    fun getKeywords(): LiveData<ArrayList<String>> = repository.getKeywords()
+        return ArrayList<Item>().apply {
+            for(keyword in keywords.split(' ')){
+                this.addAll(items.filter{
+                    it.description.toLowerCase().indexOf(keyword.toLowerCase()) > -1
+                })
+            }
+        }
+    }
+
+    fun getKeywords(): LiveData<ArrayList<String>> = repository?.getKeywords()!!
 
     fun insertKeyword(keywords: String){
         for(keyword in keywords.split(' ')){
-            repository.addKeyword(Keyword(keyword))
+            if(keyword != "") {
+                repository?.addKeyword(Keyword(keyword))
+            }
         }
     }
 
@@ -47,9 +51,9 @@ class ItemViewModel(private val repository: ItemRepository) : ViewModel(){ //Vie
     }
 
     private fun initItems(){
-        repository.getItem(onSuccess = {
+        repository?.getItem(onSuccess = {
             items = it
-            items.add(Item("테스트","테스트테스트테스트테스트테스트"))
+            items.add(0,Item("테스트","테스트테스트테스트테스트테스트"))
 
             resultItems?.postValue(items)
         }, onError = {

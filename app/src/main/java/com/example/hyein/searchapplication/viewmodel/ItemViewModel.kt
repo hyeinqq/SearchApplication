@@ -1,14 +1,16 @@
 package com.example.hyein.searchapplication.viewmodel
 
-import android.app.Application
-import android.arch.lifecycle.AndroidViewModel
+import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
+import android.arch.lifecycle.Transformations
+import android.arch.lifecycle.ViewModel
 import android.preference.PreferenceManager
+import android.util.Log
 import com.example.hyein.searchapplication.model.Item
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
+import com.example.hyein.searchapplication.model.Keyword
+import com.example.hyein.searchapplication.repository.ItemRepository
 
-class ItemViewModel(application: Application):AndroidViewModel(application){ //ViewModel(){
+class ItemViewModel(private val repository: ItemRepository) : ViewModel(){ //ViewModel(){
     private var items = ArrayList<Item>()
     private var resultItems : MutableLiveData<ArrayList<Item>>? = null
 
@@ -27,6 +29,15 @@ class ItemViewModel(application: Application):AndroidViewModel(application){ //V
     }
 
 
+    fun getKeywords(): LiveData<ArrayList<String>> = repository.getKeywords()
+
+    fun insertKeyword(keywords: String){
+        for(keyword in keywords.split(' ')){
+            repository.addKeyword(Keyword(keyword))
+        }
+    }
+
+
     fun getResultItems(): MutableLiveData<ArrayList<Item>> {
         if(resultItems == null){
             resultItems = MutableLiveData()
@@ -35,11 +46,15 @@ class ItemViewModel(application: Application):AndroidViewModel(application){ //V
         return resultItems!!
     }
 
-    fun initItems(){
-        val jsonString: String = getApplication<Application>().assets.open("item.json").bufferedReader().use { it.readText() }
+    private fun initItems(){
+        repository.getItem(onSuccess = {
+            items = it
+            items.add(Item("테스트","테스트테스트테스트테스트테스트"))
 
-        items = Gson().fromJson(jsonString, object : TypeToken<ArrayList<Item>>(){}.type)
-        items.add(Item("테스트","테스트테스트테스트테스트테스트"))
+            resultItems?.postValue(items)
+        }, onError = {
+            Log.i("TEST!", "onError???  $it")
+        })
     }
 
     override fun onCleared() {

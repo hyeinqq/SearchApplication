@@ -1,12 +1,12 @@
 package com.example.hyein.searchapplication.adapter
 
+
 import android.databinding.DataBindingUtil
 import android.graphics.Color
 import android.support.v7.widget.RecyclerView
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView

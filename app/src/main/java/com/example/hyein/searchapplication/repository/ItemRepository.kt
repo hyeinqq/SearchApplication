@@ -11,6 +11,7 @@ import retrofit2.Response
 
 
 class ItemRepository(private val webService: WebService, private val cache: SearchLocalCache) {
+    lateinit var items: ArrayList<Item>
 
     fun getItem(onSuccess: (items: ArrayList<Item>)-> Unit,
                 onError: (error: String) -> Unit){
@@ -20,10 +21,13 @@ class ItemRepository(private val webService: WebService, private val cache: Sear
             }
 
             override fun onResponse(call: Call<ArrayList<Item>>?, response: Response<ArrayList<Item>>?) {
-                response?.body()?.let { onSuccess(it) }
+                response?.body()?.let {
+                    items = it
+                    onSuccess(it) }
             }
         })
     }
+
 
     fun addKeyword(keyword: Keyword){
         cache.insert(keyword = keyword, insertFinished = {})

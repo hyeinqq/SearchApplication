@@ -3,7 +3,6 @@ package com.example.hyein.searchapplication.activity
 import android.app.Activity
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
-import android.arch.persistence.room.Room
 import android.databinding.DataBindingUtil
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -31,8 +30,8 @@ import java.util.concurrent.Executors
 class MainActivity : AppCompatActivity(), TextWatcher, View.OnKeyListener {
     val tag:String = "TEST!"
 
-    lateinit var mainBinding: ActivityMainBinding
-    lateinit var itemViewModel: ItemViewModel
+    private lateinit var mainBinding: ActivityMainBinding
+    private lateinit var itemViewModel: ItemViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,7 +67,7 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnKeyListener {
         }
     }
 
-    fun getCurrentKeywordList(): ArrayList<String>{
+    private fun getCurrentKeywordList(): ArrayList<String>{
         return  ArrayList<String>(mainBinding.searchTextView.text.toString().split(' '))
     }
 

@@ -15,5 +15,5 @@ class SearchLocalCache(
         }
     }
 
-    fun getStrings(): LiveData<List<String>> = keywordDao.getKeywordStrings()
+    fun getStrings(): List<String> = keywordDao.getKeywordStrings()
 }

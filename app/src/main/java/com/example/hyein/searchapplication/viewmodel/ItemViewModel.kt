@@ -21,7 +21,6 @@ class ItemViewModel(private val repository: ItemRepository?) : ViewModel(){ //Vi
     }
 
     fun filterList(keywords: String): ArrayList<Item>{
-
         return ArrayList<Item>().apply {
             for(keyword in keywords.split(' ')){
                 this.addAll(items.filter{
@@ -31,7 +30,11 @@ class ItemViewModel(private val repository: ItemRepository?) : ViewModel(){ //Vi
         }
     }
 
-    fun getKeywords(): LiveData<ArrayList<String>> = repository?.getKeywords()!!
+    fun getKeywords(): LiveData<List<String>> {
+        val mutableLiveData = MutableLiveData<List<String>>()
+        mutableLiveData.value = repository?.getKeywords()
+        return mutableLiveData
+    }
 
     fun insertKeyword(keywords: String){
         for(keyword in keywords.split(' ')){
@@ -51,7 +54,8 @@ class ItemViewModel(private val repository: ItemRepository?) : ViewModel(){ //Vi
     }
 
     private fun initItems(){
-        repository?.getItem(onSuccess = {
+        resultItems?.postValue(items)
+        repository?.getItemServer(onSuccess = {
             items = it
             items.add(0,Item("테스트","테스트테스트테스트테스트테스트"))
 
@@ -59,9 +63,5 @@ class ItemViewModel(private val repository: ItemRepository?) : ViewModel(){ //Vi
         }, onError = {
             Log.i("TEST!", "onError???  $it")
         })
-    }
-
-    override fun onCleared() {
-        super.onCleared()
     }
 }

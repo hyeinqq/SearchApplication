@@ -27,9 +27,7 @@ class ItemAdapter(private val itemList : ArrayList<Item>, private val keywordLis
                     spannable.setSpan(ForegroundColorSpan(Color.RED), startIndex, startIndex+keyword.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                     binding.itemTextView.setText(spannable, TextView.BufferType.SPANNABLE)
                 }
-
             }
-
         }
     }
 

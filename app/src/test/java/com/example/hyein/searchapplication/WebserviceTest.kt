@@ -1,14 +1,10 @@
 package com.example.hyein.searchapplication
 
-import com.example.hyein.searchapplication.database.SearchLocalCache
-import com.example.hyein.searchapplication.repository.ItemRepository
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
-import okio.BufferedSource
 import okio.Okio
 import org.junit.Before
 import org.junit.Test
-import org.mockito.Mockito
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 

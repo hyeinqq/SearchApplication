@@ -1,22 +1,14 @@
 package com.example.hyein.searchapplication
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModel
 import android.util.Log
-import com.example.hyein.searchapplication.database.SearchLocalCache
 import com.example.hyein.searchapplication.model.Item
-import com.example.hyein.searchapplication.model.Keyword
 import com.example.hyein.searchapplication.repository.ItemRepository
 import com.example.hyein.searchapplication.viewmodel.ItemViewModel
-import okhttp3.mockwebserver.MockWebServer
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.TestRule
 import org.junit.runner.RunWith
-import org.mockito.Mock
 import org.mockito.Mockito.*
-import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
@@ -40,26 +32,32 @@ class ItemUnitTest{
 
     @Test
     fun getIncludeKeywordItem(){
-        val itemRepository = mock(ItemRepository::class.java)
-        `when`(itemRepository.items).thenReturn(items)
+//        val repository = mock(ItemRepository::class.java)
+//        val viewModel = ItemViewModel(repository)
+//        viewModel.filterList("desc", items)
+//
+//        val filterItems = ArrayList(listOf(Item("name", "description"),
+//        Item("name", "descrip"), Item("name", "desc")))
+//
+//        assert(viewModel.filterList("desc", items).size == filterItems.size)
 
-        val viewModel = ItemViewModel(itemRepository)
-        viewModel.items = itemRepository.items
+//        val viewModel = mock(ItemViewModel::class.java)
+//        `when`(viewModel.items).thenReturn(items)
+//
+//        val viewModelItems = items
 
+        val viewModel = ItemViewModel(null)
+        viewModel.items = items
         val filterItems = ArrayList(listOf(Item("name", "description"),
                 Item("name", "descrip"), Item("name", "desc")))
 
-        assert(viewModel.filterList("desc") == filterItems)
+        assert(viewModel.filterList("desc").size == filterItems.size)
     }
 
     @Test
-    fun getItem(){
+    fun addItem(){
         val item = Item("test", "description")
         items.add(item)
-
-
-
-
         assert(item.description.equals("description"))
     }
 

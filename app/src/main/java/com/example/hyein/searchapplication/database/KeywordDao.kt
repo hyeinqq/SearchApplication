@@ -17,6 +17,6 @@ interface KeywordDao{
     fun getAll(): LiveData<List<Keyword>>
 
     @Query("SELECT name FROM keywords")
-    fun getKeywordStrings(): List<String>
+    fun getKeywordStrings(): LiveData<List<String>>
 
 }

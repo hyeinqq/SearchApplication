@@ -30,6 +30,8 @@ class ItemRepository(private val webService: WebService, private val cache: Sear
         cache.insert(keyword = keyword, insertFinished = {})
     }
 
-    fun getKeywords() = cache.getStrings()
+    fun getKeywords() = cache.getStrings() as LiveData<ArrayList<String>>
+
+
 
 }

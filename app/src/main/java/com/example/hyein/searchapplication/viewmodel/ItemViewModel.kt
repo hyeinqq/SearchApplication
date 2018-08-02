@@ -30,11 +30,7 @@ class ItemViewModel(private val repository: ItemRepository?) : ViewModel(){ //Vi
         }
     }
 
-    fun getKeywords(): LiveData<List<String>> {
-        val mutableLiveData = MutableLiveData<List<String>>()
-        mutableLiveData.value = repository?.getKeywords()
-        return mutableLiveData
-    }
+    fun getKeywords(): LiveData<ArrayList<String>> = repository?.getKeywords()!!
 
     fun insertKeyword(keywords: String){
         for(keyword in keywords.split(' ')){

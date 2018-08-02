@@ -1,21 +1,27 @@
 package com.example.hyein.searchapplication
 
+import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.Observer
 import android.util.Log
+import com.example.hyein.searchapplication.database.SearchLocalCache
 import com.example.hyein.searchapplication.model.Item
+import com.example.hyein.searchapplication.model.Keyword
 import com.example.hyein.searchapplication.repository.ItemRepository
 import com.example.hyein.searchapplication.viewmodel.ItemViewModel
+import okhttp3.mockwebserver.MockWebServer
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.TestRule
 import org.junit.runner.RunWith
+import org.mockito.Mock
 import org.mockito.Mockito.*
+import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
 class ItemUnitTest{
     lateinit var items:ArrayList<Item>
-
-//    @Mock
-//    lateinit var itemViewModel: ItemViewModel
 
     @Before
     fun setUp(){
@@ -51,6 +57,11 @@ class ItemUnitTest{
         val item = Item("test", "description")
         items.add(item)
 
+
+
+
         assert(item.description.equals("description"))
     }
+
+
 }

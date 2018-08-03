@@ -1,19 +1,19 @@
 package com.example.hyein.searchapplication.viewmodel
 
-import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.util.Log
 import com.example.hyein.searchapplication.model.Item
 import com.example.hyein.searchapplication.model.Keyword
 import com.example.hyein.searchapplication.repository.ItemRepository
+import com.example.hyein.searchapplication.repository.KeywordRepository
 
-class ItemViewModel(private val repository: ItemRepository?) : ViewModel(){ //ViewModel(){
+class MainViewModel(private val itemRepository: ItemRepository?, private val keywordRepository: KeywordRepository) : ViewModel(){
     var items = ArrayList<Item>()
     private var resultItems : MutableLiveData<ArrayList<Item>>? = null
 
     init {
-        repository?.let { initItems()}
+        itemRepository?.let { initItems()}
     }
 
     fun search(keywords: String){
@@ -30,12 +30,12 @@ class ItemViewModel(private val repository: ItemRepository?) : ViewModel(){ //Vi
         }
     }
 
-    fun getKeywords() = repository?.getKeywords()!! as LiveData<ArrayList<String>>
+    fun getKeywords() = keywordRepository.getKeywords()
 
     fun insertKeyword(keywords: String){
         for(keyword in keywords.split(' ')){
             if(keyword != "") {
-                repository?.addKeyword(Keyword(keyword))
+                keywordRepository.addKeyword(Keyword(keyword))
             }
         }
     }
@@ -51,7 +51,7 @@ class ItemViewModel(private val repository: ItemRepository?) : ViewModel(){ //Vi
 
     private fun initItems(){
         resultItems?.postValue(items)
-        repository?.getItemServer(onSuccess = {
+        itemRepository?.getItemServer(onSuccess = {
             items = it
             items.add(0,Item("테스트","테스트테스트테스트테스트테스트"))
 

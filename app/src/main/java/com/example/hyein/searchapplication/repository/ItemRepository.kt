@@ -1,16 +1,13 @@
 package com.example.hyein.searchapplication.repository
 
 import com.example.hyein.searchapplication.WebService
-import com.example.hyein.searchapplication.database.KeywordDao
 import com.example.hyein.searchapplication.model.Item
-import com.example.hyein.searchapplication.model.Keyword
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.util.concurrent.Executors
 
 
-class ItemRepository(private val webService: WebService, private val keywordDao: KeywordDao) {
+class ItemRepository(private val webService: WebService) {
     fun getItemServer(onSuccess: (items: ArrayList<Item>)-> Unit,
                 onError: (error: String) -> Unit){
         webService.getItems().enqueue(object :Callback<ArrayList<Item>>{
@@ -25,14 +22,6 @@ class ItemRepository(private val webService: WebService, private val keywordDao:
         })
     }
 
-
-    fun addKeyword(keyword: Keyword){
-        Executors.newSingleThreadExecutor().execute {
-            keywordDao.insert(keyword)
-        }
-    }
-
-    fun getKeywords() = keywordDao.getKeywordStrings()
 
 
 

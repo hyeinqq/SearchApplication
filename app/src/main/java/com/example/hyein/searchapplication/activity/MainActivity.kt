@@ -20,23 +20,25 @@ import com.example.hyein.searchapplication.adapter.ItemAdapter
 import com.example.hyein.searchapplication.database.SearchDatabase
 import com.example.hyein.searchapplication.databinding.ActivityMainBinding
 import com.example.hyein.searchapplication.repository.ItemRepository
-import com.example.hyein.searchapplication.viewmodel.ItemViewModel
-import com.example.hyein.searchapplication.viewmodel.ItemViewModelFactory
+import com.example.hyein.searchapplication.repository.KeywordRepository
+import com.example.hyein.searchapplication.viewmodel.MainViewModel
+import com.example.hyein.searchapplication.viewmodel.MainViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity(), TextWatcher, View.OnKeyListener {
     val tag = "TEST!"
 
-    private lateinit var itemViewModel: ItemViewModel
+    private lateinit var mainViewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val itemRepository = ItemRepository(WebService.create(), SearchDatabase.getDatabase(this).keywordDao())
+        val itemRepository = ItemRepository(WebService.create())
+        val keywordRepository = KeywordRepository(SearchDatabase.getDatabase(this).keywordDao())
 
         DataBindingUtil.setContentView<ActivityMainBinding>(this@MainActivity, R.layout.activity_main)
-        itemViewModel = ViewModelProviders.of(this@MainActivity, ItemViewModelFactory(itemRepository)).get(ItemViewModel::class.java)
+        mainViewModel = ViewModelProviders.of(this@MainActivity, MainViewModelFactory(itemRepository,keywordRepository)).get(MainViewModel::class.java)
 
         initComponents()
         subscribe()
@@ -45,8 +47,8 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnKeyListener {
     fun searchKeyword(view: View){
         val keywords : String = searchTextView.text.toString()
 
-        itemViewModel.search(keywords)
-        itemViewModel.insertKeyword(searchTextView.text.toString())
+        mainViewModel.search(keywords)
+        mainViewModel.insertKeyword(searchTextView.text.toString())
     }
 
     private fun initComponents(){
@@ -59,7 +61,7 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnKeyListener {
         searchTextView.let {
             it.addTextChangedListener(this)
             it.setOnKeyListener(this)
-            it.setAdapter(ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, itemViewModel.getKeywords().value))
+            it.setAdapter(ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, mainViewModel.getKeywords().value))
         }
     }
 
@@ -68,18 +70,18 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnKeyListener {
     }
 
     private fun subscribe(){
-        itemViewModel.getResultItems().observe(this@MainActivity, Observer {
+        mainViewModel.getResultItems().observe(this@MainActivity, Observer {
             it?.let {
                 recyclerView.adapter = ItemAdapter(it, getCurrentKeywordList())
             }
         })
 
-        itemViewModel.getKeywords().observe(this@MainActivity, Observer {
+        mainViewModel.getKeywords().observe(this@MainActivity, Observer {
             searchTextView.setAdapter(ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, it))
         })
     }
 
-    private fun getItem() = itemViewModel.getResultItems().value!!
+    private fun getItem() = mainViewModel.getResultItems().value!!
 
     //implements OnKeyListener
     override fun onKey(view: View?, keyCode: Int, event: KeyEvent?): Boolean {
@@ -88,7 +90,7 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnKeyListener {
             val imm: InputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(searchTextView.windowToken, 0)
 
-            itemViewModel.insertKeyword(searchTextView.text.toString())
+            mainViewModel.insertKeyword(searchTextView.text.toString())
             return true
         }
         return false
@@ -99,7 +101,7 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnKeyListener {
         searchTextView.showDropDown()
     }
     override fun afterTextChanged(p0: Editable?) {
-        itemViewModel.search(p0.toString())
+        mainViewModel.search(p0.toString())
     }
 
     override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {

@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.support.v7.widget.RecyclerView
 import android.text.Spannable
 import android.text.SpannableString
+import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -22,9 +23,10 @@ class ItemAdapter(private val itemList : ArrayList<Item>, private val keywordLis
 
             val spannable: Spannable = SpannableString(item.description)
             for(keyword in keywordList){
-                val startIndex = item.description.indexOf(keyword)
+                val startIndex = item.description.toLowerCase().indexOf(keyword.toLowerCase())
                 if(startIndex > -1){
                     spannable.setSpan(ForegroundColorSpan(Color.RED), startIndex, startIndex+keyword.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+
                     binding.itemTextView.setText(spannable, TextView.BufferType.SPANNABLE)
                 }
             }

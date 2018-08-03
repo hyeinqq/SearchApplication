@@ -1,14 +1,13 @@
 package com.example.hyein.searchapplication
 
-import android.arch.lifecycle.ViewModel
 import android.util.Log
 import com.example.hyein.searchapplication.model.Item
-import com.example.hyein.searchapplication.repository.ItemRepository
-import com.example.hyein.searchapplication.viewmodel.ItemViewModel
+import com.example.hyein.searchapplication.repository.KeywordRepository
+import com.example.hyein.searchapplication.viewmodel.MainViewModel
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mockito.*
+import org.mockito.Mockito.mock
 import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
@@ -32,21 +31,8 @@ class ItemUnitTest{
 
     @Test
     fun getIncludeKeywordItem(){
-//        val repository = mock(ItemRepository::class.java)
-//        val viewModel = ItemViewModel(repository)
-//        viewModel.filterList("desc", items)
-//
-//        val filterItems = ArrayList(listOf(Item("name", "description"),
-//        Item("name", "descrip"), Item("name", "desc")))
-//
-//        assert(viewModel.filterList("desc", items).size == filterItems.size)
-
-//        val viewModel = mock(ItemViewModel::class.java)
-//        `when`(viewModel.items).thenReturn(items)
-//
-//        val viewModelItems = items
-
-        val viewModel = ItemViewModel(null)
+        val keywordRepository = mock(KeywordRepository::class.java)
+        val viewModel = MainViewModel(null, keywordRepository)
         viewModel.items = items
         val filterItems = ArrayList(listOf(Item("name", "description"),
                 Item("name", "descrip"), Item("name", "desc")))

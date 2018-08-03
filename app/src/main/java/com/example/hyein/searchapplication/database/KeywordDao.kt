@@ -13,8 +13,11 @@ interface KeywordDao{
     @Insert(onConflict = REPLACE)
     fun insert(keyword: Keyword)
 
+    @Query("SELECT * FROM keywords WHERE name = :name")
+    fun get(name: String):Keyword
+
     @Query("SELECT * FROM keywords")
-    fun getAll(): LiveData<List<Keyword>>
+    fun getAll(): List<Keyword>
 
     @Query("SELECT name FROM keywords")
     fun getKeywordStrings(): LiveData<List<String>>

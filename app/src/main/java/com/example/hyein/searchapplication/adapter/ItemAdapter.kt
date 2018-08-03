@@ -8,6 +8,7 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
@@ -25,10 +26,17 @@ class ItemAdapter(private val itemList : ArrayList<Item>, private val keywordLis
             for(keyword in keywordList){
                 val startIndex = item.description.toLowerCase().indexOf(keyword.toLowerCase())
                 if(startIndex > -1){
-                    spannable.setSpan(ForegroundColorSpan(Color.RED), startIndex, startIndex+keyword.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
 
-                    binding.itemTextView.setText(spannable, TextView.BufferType.SPANNABLE)
+                    try{
+                        spannable.setSpan(ForegroundColorSpan(Color.RED), startIndex, startIndex+keyword.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        binding.itemTextView.setText(spannable, TextView.BufferType.SPANNABLE)
+                    }catch (e: IndexOutOfBoundsException){
+                        Log.i("TEST ", "ddd ")
+                    }
+
+
                 }
+
             }
         }
     }

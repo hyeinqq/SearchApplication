@@ -11,7 +11,7 @@ import retrofit2.http.Query
 
 
 interface WebService{
-    @GET("cheeses.json")
+    @GET("cheeses")
     fun getItems(): Call<ArrayList<Item>>
 
     companion object Factory {

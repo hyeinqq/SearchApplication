@@ -1,18 +1,42 @@
 package com.example.hyein.searchapplication
 
-import android.util.Log
+import android.arch.core.executor.testing.InstantTaskExecutorRule
+import android.arch.lifecycle.MutableLiveData
+import android.arch.lifecycle.Observer
 import com.example.hyein.searchapplication.model.Item
+import com.example.hyein.searchapplication.repository.ItemRepository
 import com.example.hyein.searchapplication.repository.KeywordRepository
 import com.example.hyein.searchapplication.viewmodel.MainViewModel
+import org.junit.Assert
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mockito.mock
+import org.mockito.Mockito
+import org.mockito.Mockito.*
 import org.mockito.junit.MockitoJUnitRunner
+import kotlin.collections.ArrayList
 
 @RunWith(MockitoJUnitRunner::class)
 class ItemUnitTest{
     lateinit var items:ArrayList<Item>
+
+    inline fun <reified T> mock(): T = Mockito.mock(T::class.java)
+
+    fun <T> any(): T {
+        Mockito.any<T>()
+        return uninitialized()
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun <T> uninitialized(): T = null as T
+
+    @Rule
+    @JvmField
+    val rule = InstantTaskExecutorRule()
+
+    val itemRepository = mock(ItemRepository::class.java)
+    val keywordRepository = mock(KeywordRepository::class.java)
 
     @Before
     fun setUp(){
@@ -25,26 +49,49 @@ class ItemUnitTest{
         items.add(Item("name", "suran"))
         items.add(Item("name", "fan"))
 
-        Log.i("TEST!", "여기 먼저 오나???")
+        @Suppress("UNCHECKED_CAST")
+        doAnswer { invocation ->
+            val callback = invocation.arguments[0] as (ArrayList<Item>) -> Unit
+            callback(items)
+        }.`when`(itemRepository).getItemServer(any(), any())
+
     }
 
 
     @Test
-    fun getIncludeKeywordItem(){
-        val keywordRepository = mock(KeywordRepository::class.java)
-        val viewModel = MainViewModel(null, keywordRepository)
-        viewModel.items = items
+    fun search(){
+        val viewModel = MainViewModel(itemRepository, keywordRepository)
+        val mockObserver = mock<Observer<ArrayList<Item>>>()
+        viewModel.getResultItems().observeForever(mockObserver)
+
         val filterItems = ArrayList(listOf(Item("name", "description"),
                 Item("name", "descrip"), Item("name", "desc")))
 
-        assert(viewModel.filterList("desc").size == filterItems.size)
+        viewModel.search("desc")
+
+        Mockito.verify(mockObserver).onChanged(filterItems)
     }
 
     @Test
-    fun addItem(){
-        val item = Item("test", "description")
-        items.add(item)
-        assert(item.description.equals("description"))
+    fun getKeywords(){
+        val viewModel = MainViewModel(itemRepository, keywordRepository)
+
+        val stringList = ArrayList(listOf("testCase", "test", "cheese"))
+        val keywordStrings = MutableLiveData<List<String>>().apply {
+            value = stringList
+        }
+
+        `when`(keywordRepository.getKeywords()).thenReturn(keywordStrings)
+        assert(viewModel.getKeywords().value?.size == 3)
+
+    }
+
+
+    @Test
+    fun insertKeyword(){
+        val viewModel = MainViewModel(itemRepository, keywordRepository)
+        viewModel.insertKeyword("keyword keyword")
+
     }
 
 

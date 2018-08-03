@@ -3,6 +3,7 @@ package com.example.hyein.searchapplication.activity
 import android.app.Activity
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -27,8 +28,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity(), TextWatcher, View.OnKeyListener {
-    val tag = "TEST!"
-
     private lateinit var mainViewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,14 +53,16 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnKeyListener {
     private fun initComponents(){
         recyclerView.apply{
             layoutManager = LinearLayoutManager(this@MainActivity)
-            adapter = ItemAdapter(getItem(), ArrayList<String>())
+            adapter = ItemAdapter(getItem() ?: ArrayList(), ArrayList())
             addItemDecoration(DividerItemDecoration(this@MainActivity, DividerItemDecoration.VERTICAL))
         }
 
-        searchTextView.let {
-            it.addTextChangedListener(this)
-            it.setOnKeyListener(this)
-            it.setAdapter(ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, mainViewModel.getKeywords().value))
+        searchTextView.run {
+            addTextChangedListener(this@MainActivity)
+            setOnKeyListener(this@MainActivity)
+            //바로 value를 꺼내는건 위험!(빈 리스트를 넘기거나 해야함) adapter가 늦게 설정되도 된다면, 옵저버에서 그냥 처리
+            setAdapter(ArrayAdapter<String>(this@MainActivity, android.R.layout.simple_dropdown_item_1line,
+                    mainViewModel.getKeywords().value ?: ArrayList()))
         }
     }
 
@@ -81,7 +82,7 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnKeyListener {
         })
     }
 
-    private fun getItem() = mainViewModel.getResultItems().value!!
+    private fun getItem() = mainViewModel.getResultItems().value
 
     //implements OnKeyListener
     override fun onKey(view: View?, keyCode: Int, event: KeyEvent?): Boolean {

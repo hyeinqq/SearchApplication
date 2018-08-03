@@ -18,13 +18,11 @@ import com.example.hyein.searchapplication.R
 import com.example.hyein.searchapplication.WebService
 import com.example.hyein.searchapplication.adapter.ItemAdapter
 import com.example.hyein.searchapplication.database.SearchDatabase
-import com.example.hyein.searchapplication.database.SearchLocalCache
 import com.example.hyein.searchapplication.databinding.ActivityMainBinding
 import com.example.hyein.searchapplication.repository.ItemRepository
 import com.example.hyein.searchapplication.viewmodel.ItemViewModel
 import com.example.hyein.searchapplication.viewmodel.ItemViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.*
-import java.util.concurrent.Executors
 
 
 class MainActivity : AppCompatActivity(), TextWatcher, View.OnKeyListener {
@@ -35,8 +33,7 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnKeyListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val itemRepository = ItemRepository(WebService.create(),
-                SearchLocalCache(SearchDatabase.getDatabase(this).keywordDao(), Executors.newSingleThreadExecutor()))
+        val itemRepository = ItemRepository(WebService.create(), SearchDatabase.getDatabase(this).keywordDao())
 
         DataBindingUtil.setContentView<ActivityMainBinding>(this@MainActivity, R.layout.activity_main)
         itemViewModel = ViewModelProviders.of(this@MainActivity, ItemViewModelFactory(itemRepository)).get(ItemViewModel::class.java)
@@ -67,7 +64,7 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnKeyListener {
     }
 
     private fun getCurrentKeywordList(): ArrayList<String>{
-        return  ArrayList<String>(searchTextView.text.toString().split(' '))
+        return  ArrayList(searchTextView.text.toString().split(' '))
     }
 
     private fun subscribe(){

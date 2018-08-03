@@ -1,16 +1,16 @@
 package com.example.hyein.searchapplication.repository
 
-import android.arch.lifecycle.LiveData
 import com.example.hyein.searchapplication.WebService
-import com.example.hyein.searchapplication.database.SearchLocalCache
+import com.example.hyein.searchapplication.database.KeywordDao
 import com.example.hyein.searchapplication.model.Item
 import com.example.hyein.searchapplication.model.Keyword
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.concurrent.Executors
 
 
-class ItemRepository(private val webService: WebService, private val cache: SearchLocalCache) {
+class ItemRepository(private val webService: WebService, private val keywordDao: KeywordDao) {
     fun getItemServer(onSuccess: (items: ArrayList<Item>)-> Unit,
                 onError: (error: String) -> Unit){
         webService.getItems().enqueue(object :Callback<ArrayList<Item>>{
@@ -27,10 +27,12 @@ class ItemRepository(private val webService: WebService, private val cache: Sear
 
 
     fun addKeyword(keyword: Keyword){
-        cache.insert(keyword = keyword, insertFinished = {})
+        Executors.newSingleThreadExecutor().execute {
+            keywordDao.insert(keyword)
+        }
     }
 
-    fun getKeywords() = cache.getStrings() as LiveData<ArrayList<String>>
+    fun getKeywords() = keywordDao.getKeywordStrings()
 
 
 

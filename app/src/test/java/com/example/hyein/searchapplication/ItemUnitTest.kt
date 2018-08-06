@@ -7,7 +7,6 @@ import com.example.hyein.searchapplication.model.Item
 import com.example.hyein.searchapplication.repository.ItemRepository
 import com.example.hyein.searchapplication.repository.KeywordRepository
 import com.example.hyein.searchapplication.viewmodel.MainViewModel
-import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -54,7 +53,6 @@ class ItemUnitTest{
             val callback = invocation.arguments[0] as (ArrayList<Item>) -> Unit
             callback(items)
         }.`when`(itemRepository).getItemServer(any(), any())
-
     }
 
 

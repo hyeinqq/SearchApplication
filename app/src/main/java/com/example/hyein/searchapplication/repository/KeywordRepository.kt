@@ -13,5 +13,4 @@ class KeywordRepository(private val keywordDao: KeywordDao){
     }
 
     fun getKeywords() = keywordDao.getKeywordStrings()
-
 }

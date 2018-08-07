@@ -50,9 +50,9 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnKeyListener {
 
     fun searchKeyword(view: View){
         val keywords : String = searchTextView.text.toString()
-
-        mainViewModel.search(keywords)
-        mainViewModel.insertKeyword(searchTextView.text.toString())
+// 이미 TextChanged가 불린 후이기 때문에 중복으로 부를 필요가 없다.
+//        mainViewModel.search(keywords)
+        mainViewModel.insertKeyword(keywords)
     }
 
     private fun initComponents(){
